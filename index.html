@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>pona cards</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.png" type="image/png">
+
+<style>
+@font-face {
+    font-family: "FairfaxPona";
+    src: url("FairfaxPonaHD.ttf") format("truetype");
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #0a0a0a;
+    font-family: "Lexend", sans-serif;
+    color: white;
+    overflow: hidden;
+    height: 100vh;
+}
+
+.topnav-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 85px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.topnav-inner {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: auto;
+    position: relative;
+}
+
+.nav-title {
+    position: absolute;
+    left: 20px;
+    font-size: 28px;
+    font-weight: 700;
+    color: white;
+    user-select: none;
+    pointer-events: none;
+    font-family: "Lexend", sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-title-pona {
+    font-family: "FairfaxPona", sans-serif;
+    font-size: 40px;
+    color: #ffff63;
+}
+
+#resetBtn {
+    color: #f0575c;
+    font-family: "Lexend", sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    user-select: none;
+    text-decoration: none;
+}
+
+#resetBtn:hover {
+    text-decoration: underline;
+}
+
+.topnav {
+    display: none;
+    gap: 20px;
+}
+
+.navbtn {
+    padding: 10px 22px;
+    background: #222;
+    border: 3px solid #666;
+    color: white;
+    font-size: 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.2s ease, opacity 0.2s ease;
+    user-select: none;
+    font-family: "Lexend", sans-serif;
+}
+
+.navbtn:hover {
+    background: #333;
+}
+
+.navbtn.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.nav-separator {
+    width: 100%;
+    height: 4px;
+    background: #444;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    transition: opacity 0.2s ease;
+}
+
+.nav-separator.hidden {
+    opacity: 0;
+}
+
+
+.sorter-wrapper {
+    position: fixed;
+    top: 95px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 9;
+    background: #0a0a0a;
+    padding-bottom: 6px;
+}
+
+.sorter-bottom {
+    position: fixed;
+    top: 185px;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: #444;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    transition: none;
+    z-index: 10;
+}
+
+.sorter-inner {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 10px;
+}
+
+.sorter-label {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.sorter-bar {
+    display: flex;
+    gap: 10px;
+}
+
+.sorter-btn {
+    padding: 8px 18px;
+    border-radius: 14px;
+    font-size: 16px;
+    cursor: pointer;
+    background: transparent;
+    border: 2px solid #666;
+    color: #888;
+    transition: all 0.2s ease;
+    font-family: "Lexend", sans-serif;
+}
+
+.sorter-btn.active {
+    border-color: white;
+    color: white;
+}
+.collection-count {
+    margin-top: 8px;
+    text-align: center;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    color: white;
+    font-size: 16px;
+}
+
+.hint {
+    position: fixed;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 19px;
+    color: #888;
+    opacity: 0.9;
+    font-family: "Lexend", sans-serif;
+    user-select: none;
+    pointer-events: none;
+    display: none;
+}
+
+.empty-collection {
+    font-size: 24px;
+    color: #888;
+    font-weight: 600;
+    display: none;
+    position: fixed;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    pointer-events: none;
+    transform: translateY(-50%);
+}
+
+#packLimitStatus {
+    position: fixed;
+    top: 105px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-family: "Lexend", sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    pointer-events: none;
+    user-select: none;
+    display: none;
+}
+
+.collection-count {
+    margin-bottom: 8px;
+    text-align: center;
+    font-family: "Lexend", sans-serif;
+    font-weight: 700;
+    color: white;
+    font-size: 20px;
+    display: block;
+    user-select: none;
+}
+
+
+.main {
+    position: absolute;
+    top: 140px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main.fullscreen {
+    top: 0;
+}
+
+.pack-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pack {
+    width: 240px;
+    height: 340px;
+    background: linear-gradient(135deg, #333, #1a1a1a);
+    border: 4px solid #777;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    user-select: none;
+    font-family: "Lexend", sans-serif;
+}
+
+.pack:hover {
+    transform: translateY(-14px);
+    box-shadow: 0 14px 30px rgba(255,255,255,0.15);
+}
+
+.cards-area {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.cards {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+}
+
+.card {
+    width: 180px;
+    height: 300px;
+    background: #1c1c1c;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    color: #eee;
+    transform: translateY(50px);
+    opacity: 0;
+    transition: transform 0.4s ease, opacity 0.4s ease, box-shadow 0.2s ease;
+    border: 4px solid transparent;
+    user-select: none;
+    position: relative;
+    z-index: 1;
+}
+
+.card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.6);
+}
+
+.card.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.card.fly {
+    transition: transform 0.55s cubic-bezier(0.25, 0.1, 0.25, 1),
+                opacity 0.55s ease-out;
+}
+
+.rarity-label {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    font-family: "Lexend", sans-serif;
+}
+
+.glyph {
+    font-family: "FairfaxPona";
+    font-size: 90px;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+}
+
+.latin {
+    font-size: 22px;
+    font-weight: 600;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-family: "Lexend", sans-serif;
+    color: #ffffff;
+}
+
+#addBtn {
+    margin-top: 40px;
+    padding: 14px 28px;
+    background: #222;
+    border: 3px solid #666;
+    color: white;
+    font-size: 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: opacity 0.3s ease, background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    opacity: 0;
+    pointer-events: none;
+    font-family: "Lexend", sans-serif;
+}
+
+#addBtn.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#addBtn.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#addBtn:hover {
+    background: #333;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+}
+
+
+.collection-area {
+    display: none;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+
+    padding: 80px 40px 80px 40px;
+
+    display: grid;
+    grid-template-columns: repeat(5, 180px);
+    justify-content: center;
+    gap: 20px;
+
+    scrollbar-width: thin;
+    scrollbar-color: #555 #111;
+}
+
+.collection-area::-webkit-scrollbar {
+    width: 6px;
+}
+.collection-area::-webkit-scrollbar-track {
+    background: #111;
+}
+.collection-area::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 3px;
+}
+
+
+.rarity-core {
+    border-color: #2ecc71;
+}
+
+.rarity-common {
+    border-color: #3498db;
+}
+
+.rarity-uncommon {
+    border-color: #f1c40f;
+}
+
+.rarity-obscure {
+    border-color: #9b59b6;
+}
+
+.rarity-sandbox {
+    border-color: #a32121;
+}
+
+.rarity-arcane {
+    border: 4px solid transparent;
+    border-radius: 16px;
+    background-image:
+        linear-gradient(#1c1c1c, #1c1c1c),
+        conic-gradient(
+            red,
+            orange,
+            yellow,
+            green,
+            cyan,
+            #0083c2,
+            violet,
+            red
+        );
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+}
+
+.rarity-label-core {
+    color: #2ecc71;
+}
+
+.rarity-label-common {
+    color: #3498db;
+}
+
+.rarity-label-uncommon {
+    color: #f1c40f;
+}
+
+.rarity-label-obscure {
+    color: #9b59b6;
+}
+
+.rarity-label-sandbox {
+    color: #a32121;
+}
+
+.rarity-label-arcane {
+    background: linear-gradient(
+        90deg,
+        red,
+        orange,
+        yellow,
+        green,
+        cyan,
+        #0083c2,
+        violet
+    );
+    -webkit-background-clip: text;
+    color: transparent;
+    border: none !important;
+    text-shadow: none !important;
+}
+</style>
+</head>
+<body>
+
+<div class="topnav-wrapper">
+    <div class="topnav-inner">
+        <div class="nav-title">pona cards <span class="nav-title-pona">lipu-toki</span></div>
+        <div class="topnav" id="topnav">
+            <button class="navbtn" id="navPack">Pack</button>
+            <button class="navbtn" id="navCollection">Collection</button>
+        </div>
+        <div id="resetBtn">Reset cards</div>
+    </div>
+    <div class="nav-separator" id="navSeparator"></div>
+</div>
+
+<div class="hint" id="hint">Click to open a card pack!</div>
+<div id="packLimitStatus">5/5 packs</div>
+<div class="hint empty-collection" id="emptyCollection" style="display:none;">Nothing here yet.</div>
+
+<div class="main" id="main">
+    <div class="pack-screen" id="packScreen">
+        <div class="pack" id="pack">PACK</div>
+    </div>
+
+    <div class="cards-area" id="cardsArea">
+        <div class="cards" id="cards"></div>
+        <button id="addBtn">Add to Collection</button>
+    </div>
+
+    <div class="collection-area" id="collectionArea"></div>
+</div>
+
+<div class="sorter-wrapper" id="sorterWrapper">
+    <div id="collectionCount" class="collection-count">0 / 0</div>
+    <div class="sorter-inner">
+        <div class="sorter-label">Sort by</div>
+        <div class="sorter-bar" id="sorterBar">
+            <button class="sorter-btn active" data-sort="time">Time added</button>
+            <button class="sorter-btn" data-sort="alpha">First letter</button>
+            <button class="sorter-btn" data-sort="rarity">Rarity</button>
+        </div>
+    </div>
+</div>
+<div class="nav-separator sorter-bottom"></div>
+
+<script>
+
+const rarities = [
+    { name: "CORE",     borderClass: "rarity-core",     labelClass: "rarity-label-core",     rank: 1 },
+    { name: "COMMON",   borderClass: "rarity-common",   labelClass: "rarity-label-common",   rank: 2 },
+    { name: "UNCOMMON", borderClass: "rarity-uncommon", labelClass: "rarity-label-uncommon", rank: 3 },
+    { name: "OBSCURE",  borderClass: "rarity-obscure",  labelClass: "rarity-label-obscure",  rank: 4 },
+    { name: "SANDBOX",  borderClass: "rarity-sandbox",  labelClass: "rarity-label-sandbox",  rank: 5 },
+    { name: "ARCANE",   borderClass: "rarity-arcane",   labelClass: "rarity-label-arcane",   rank: 6 }
+];
+
+const cardsConfig = [
+    { word: "a",    rarity: "CORE",    customName: "", displayFontSize: "" },
+    { word: "akesi",    rarity: "CORE",    customName: "", displayFontSize: "" },
+    { word: "ala",    rarity: "CORE",    customName: "", displayFontSize: "" },
+    { word: "alasa",    rarity: "CORE",    customName: "" },
+    { word: "ale",    rarity: "CORE",    customName: "" },
+    { word: "anpa",    rarity: "CORE",    customName: "" },
+    { word: "ante",    rarity: "CORE",    customName: "" },
+    { word: "anu",    rarity: "CORE",    customName: "" },
+    { word: "awen",    rarity: "CORE",    customName: "" },
+    { word: "e",    rarity: "CORE",    customName: "" },
+    { word: "en",    rarity: "CORE",    customName: "" },
+    { word: "esun",    rarity: "CORE",    customName: "" },
+    { word: "ijo",    rarity: "CORE",    customName: "" },
+    { word: "ike",    rarity: "CORE",    customName: "" },
+    { word: "ilo",    rarity: "CORE",    customName: "" },
+    { word: "insa",    rarity: "CORE",    customName: "" },
+    { word: "jaki",    rarity: "CORE",    customName: "" },
+    { word: "jan",    rarity: "CORE",    customName: "" },
+    { word: "jelo",    rarity: "CORE",    customName: "" },
+    { word: "jo",    rarity: "CORE",    customName: "" },
+    { word: "kala",    rarity: "CORE",    customName: "" },
+    { word: "kalama",    rarity: "CORE",    customName: "" },
+    { word: "kama",    rarity: "CORE",    customName: "" },
+    { word: "kasi",    rarity: "CORE",    customName: "" },
+    { word: "ken",    rarity: "CORE",    customName: "" },
+    { word: "kepeken",    rarity: "CORE",    customName: "" },
+    { word: "kili",    rarity: "CORE",    customName: "" },
+    { word: "kiwen",    rarity: "CORE",    customName: "" },
+    { word: "ko",    rarity: "CORE",    customName: "" },
+    { word: "kon",    rarity: "CORE",    customName: "" },
+    { word: "kule",    rarity: "CORE",    customName: "" },
+    { word: "kulupu",    rarity: "CORE",    customName: "" },
+    { word: "kute",    rarity: "CORE",    customName: "" },
+    { word: "la",    rarity: "CORE",    customName: "" },
+    { word: "lape",    rarity: "CORE",    customName: "" },
+    { word: "laso",    rarity: "CORE",    customName: "" },
+    { word: "lawa",    rarity: "CORE",    customName: "" },
+    { word: "len",    rarity: "CORE",    customName: "" },
+    { word: "lete",    rarity: "CORE",    customName: "" },
+    { word: "li",    rarity: "CORE",    customName: "" },
+    { word: "lili",    rarity: "CORE",    customName: "" },
+    { word: "linja",    rarity: "CORE",    customName: "" },
+    { word: "lipu",    rarity: "CORE",    customName: "" },
+    { word: "loje",    rarity: "CORE",    customName: "" },
+    { word: "lon",    rarity: "CORE",    customName: "" },
+    { word: "luka",    rarity: "CORE",    customName: "" },
+    { word: "lukin",    rarity: "CORE",    customName: "" },
+    { word: "lupa",    rarity: "CORE",    customName: "" },
+    { word: "ma",    rarity: "CORE",    customName: "" },
+    { word: "mama",    rarity: "CORE",    customName: "" },
+    { word: "mani",    rarity: "CORE",    customName: "" },
+    { word: "mi",    rarity: "CORE",    customName: "" },
+    { word: "moku",    rarity: "CORE",    customName: "" },
+    { word: "moli",    rarity: "CORE",    customName: "" },
+    { word: "monsi",    rarity: "CORE",    customName: "" },
+    { word: "mu",    rarity: "CORE",    customName: "" },
+    { word: "mun",    rarity: "CORE",    customName: "" },
+    { word: "musi",    rarity: "CORE",    customName: "" },
+    { word: "mute",    rarity: "CORE",    customName: "" },
+    { word: "nanpa",    rarity: "CORE",    customName: "" },
+    { word: "nasa",    rarity: "CORE",    customName: "" },
+    { word: "nasin",    rarity: "CORE",    customName: "" },
+    { word: "nena",    rarity: "CORE",    customName: "" },
+    { word: "ni",    rarity: "CORE",    customName: "" },
+    { word: "nimi",    rarity: "CORE",    customName: "" },
+    { word: "noka",    rarity: "CORE",    customName: "" },
+    { word: "o",    rarity: "CORE",    customName: "" },
+    { word: "olin",    rarity: "CORE",    customName: "" },
+    { word: "ona",    rarity: "CORE",    customName: "" },
+    { word: "open",    rarity: "CORE",    customName: "" },
+    { word: "pakala",    rarity: "CORE",    customName: "" },
+    { word: "pali",    rarity: "CORE",    customName: "" },
+    { word: "palisa",    rarity: "CORE",    customName: "" },
+    { word: "pan",    rarity: "CORE",    customName: "" },
+    { word: "pana",    rarity: "CORE",    customName: "" },
+    { word: "pi",    rarity: "CORE",    customName: "" },
+    { word: "pilin",    rarity: "CORE",    customName: "" },
+    { word: "pimeja",    rarity: "CORE",    customName: "" },
+    { word: "pini",    rarity: "CORE",    customName: "" },
+    { word: "pipi",    rarity: "CORE",    customName: "" },
+    { word: "poka",    rarity: "CORE",    customName: "" },
+    { word: "poki",    rarity: "CORE",    customName: "" },
+    { word: "pona",    rarity: "CORE",    customName: "" },
+    { word: "pu",    rarity: "CORE",    customName: "" },
+    { word: "sama",    rarity: "CORE",    customName: "" },
+    { word: "seli",    rarity: "CORE",    customName: "" },
+    { word: "selo",    rarity: "CORE",    customName: "" },
+    { word: "seme",    rarity: "CORE",    customName: "" },
+    { word: "sewi2",    rarity: "CORE",    customName: "sewi" },
+    { word: "sijelo",    rarity: "CORE",    customName: "" },
+    { word: "sike",    rarity: "CORE",    customName: "" },
+    { word: "sin",    rarity: "CORE",    customName: "" },
+    { word: "sina",    rarity: "CORE",    customName: "" },
+    { word: "sinpin",    rarity: "CORE",    customName: "" },
+    { word: "sitelen",    rarity: "CORE",    customName: "" },
+    { word: "sona",    rarity: "CORE",    customName: "" },
+    { word: "soweli",    rarity: "CORE",    customName: "" },
+    { word: "suli",    rarity: "CORE",    customName: "" },
+    { word: "suno",    rarity: "CORE",    customName: "" },
+    { word: "supa",    rarity: "CORE",    customName: "" },
+    { word: "suwi",    rarity: "CORE",    customName: "" },
+    { word: "tan",    rarity: "CORE",    customName: "" },
+    { word: "taso",    rarity: "CORE",    customName: "" },
+    { word: "tawa",    rarity: "CORE",    customName: "" },
+    { word: "telo",    rarity: "CORE",    customName: "" },
+    { word: "tenpo",    rarity: "CORE",    customName: "" },
+    { word: "toki",    rarity: "CORE",    customName: "" },
+    { word: "tomo",    rarity: "CORE",    customName: "" },
+    { word: "tu",    rarity: "CORE",    customName: "" },
+    { word: "unpa",    rarity: "CORE",    customName: "" },
+    { word: "uta",    rarity: "CORE",    customName: "" },
+    { word: "utala",    rarity: "CORE",    customName: "" },
+    { word: "walo",    rarity: "CORE",    customName: "" },
+    { word: "wan",    rarity: "CORE",    customName: "" },
+    { word: "waso",    rarity: "CORE",    customName: "" },
+    { word: "wawa",    rarity: "CORE",    customName: "" },
+    { word: "weka",    rarity: "CORE",    customName: "" },
+    { word: "wile",    rarity: "CORE",    customName: "" },
+    { word: "kijetesantakalu",    rarity: "COMMON",    customName: "", displayFontSize: "20" },
+    { word: "kin",    rarity: "COMMON",    customName: "" },
+    { word: "kipisi",    rarity: "COMMON",    customName: "" },
+    { word: "ku",    rarity: "COMMON",    customName: "" },
+    { word: "leko",    rarity: "COMMON",    customName: "" },
+    { word: "meli",    rarity: "COMMON",    customName: "" },
+    { word: "mije",    rarity: "COMMON",    customName: "" },
+    { word: "misikeke",    rarity: "COMMON",    customName: "" },
+    { word: "monsuta",    rarity: "COMMON",    customName: "" },
+    { word: "n",    rarity: "COMMON",    customName: "" },
+    { word: "namako",    rarity: "COMMON",    customName: "" },
+    { word: "soko",    rarity: "COMMON",    customName: "" },
+    { word: "tonsi",    rarity: "COMMON",    customName: "" },
+    { word: "antikontitutonelema",    rarity: "SANDBOX",    customName: "", displayFontSize: "15" },
+    { word: "ali",    rarity: "UNCOMMON",    customName: "" },
+    { word: "epiku",    rarity: "UNCOMMON",    customName: "" },
+    { word: "jasima",    rarity: "UNCOMMON",    customName: "" },
+    { word: "lanpan",    rarity: "UNCOMMON",    customName: "" },
+    { word: "linluwi",    rarity: "UNCOMMON",    customName: "" },
+    { word: "majuna",    rarity: "UNCOMMON",    customName: "" },
+    { word: "meso",    rarity: "UNCOMMON",    customName: "" },
+    { word: "nimisin",    rarity: "UNCOMMON",    customName: "" },
+    { word: "oko",    rarity: "UNCOMMON",    customName: "" },
+    { word: "su",    rarity: "UNCOMMON",    customName: "" },
+    { word: "apeja",    rarity: "OBSCURE",    customName: "" },
+    { word: "isipin",    rarity: "OBSCURE",    customName: "" },
+    { word: "jami",    rarity: "OBSCURE",    customName: "" },
+    { word: "kamalawala",    rarity: "OBSCURE",    customName: "" },
+    { word: "kapesi",    rarity: "OBSCURE",    customName: "" },
+    { word: "kiki",    rarity: "OBSCURE",    customName: "" },
+    { word: "kokosila",    rarity: "OBSCURE",    customName: "" },
+    { word: "konwe",    rarity: "OBSCURE",    customName: "" },
+    { word: "kulijo",    rarity: "OBSCURE",    customName: "" },
+    { word: "melome",    rarity: "OBSCURE",    customName: "" },
+    { word: "mijomi",    rarity: "OBSCURE",    customName: "" },
+    { word: "misa",    rarity: "OBSCURE",    customName: "" },
+    { word: "nja",    rarity: "OBSCURE",    customName: "" },
+    { word: "ojuta",    rarity: "OBSCURE",    customName: "" },
+    { word: "oke",    rarity: "OBSCURE",    customName: "" },
+    { word: "omekapo",    rarity: "OBSCURE",    customName: "" },
+    { word: "owe",    rarity: "OBSCURE",    customName: "" },
+    { word: "pake",    rarity: "OBSCURE",    customName: "" },
+    { word: "penpo",    rarity: "OBSCURE",    customName: "" },
+    { word: "pika",    rarity: "OBSCURE",    customName: "" },
+    { word: "po",    rarity: "OBSCURE",    customName: "" },
+    { word: "powe",    rarity: "OBSCURE",    customName: "" },
+    { word: "puwa",    rarity: "OBSCURE",    customName: "" },
+    { word: "san",    rarity: "OBSCURE",    customName: "" },
+    { word: "soto",    rarity: "OBSCURE",    customName: "" },
+    { word: "sutopatikuna",    rarity: "OBSCURE",    customName: "", displayFontSize: "21" },
+    { word: "taki",    rarity: "OBSCURE",    customName: "" },
+    { word: "te",    rarity: "OBSCURE",    customName: "" },
+    { word: "teje",    rarity: "OBSCURE",    customName: "" },
+    { word: "to",    rarity: "OBSCURE",    customName: "" },
+    { word: "unu",    rarity: "OBSCURE",    customName: "" },
+    { word: "usawi",    rarity: "OBSCURE",    customName: "" },
+    { word: "wa",    rarity: "OBSCURE",    customName: "" },
+    { word: "wasoweli",    rarity: "OBSCURE",    customName: "" },
+    { word: "wekama",    rarity: "OBSCURE",    customName: "" },
+    { word: "wuwojiti",    rarity: "OBSCURE",    customName: "" },
+    { word: "yupekosi",    rarity: "OBSCURE",    customName: "" },
+    { word: "aka",    rarity: "SANDBOX",    customName: "" },
+    { word: "ako",    rarity: "SANDBOX",    customName: "" },
+    { word: "aku",    rarity: "SANDBOX",    customName: "" },
+    { word: "alente",    rarity: "SANDBOX",    customName: "" },
+    { word: "alu",    rarity: "SANDBOX",    customName: "" },
+    { word: "an",    rarity: "SANDBOX",    customName: "" },
+    { word: "anta",    rarity: "SANDBOX",    customName: "" },
+    { word: "apelo",    rarity: "SANDBOX",    customName: "" },
+    { word: "api",    rarity: "SANDBOX",    customName: "" },
+    { word: "apoko",    rarity: "SANDBOX",    customName: "" },
+    { word: "awase",    rarity: "SANDBOX",    customName: "" },
+    { word: "eki",    rarity: "SANDBOX",    customName: "" },
+    { word: "eliki",    rarity: "SANDBOX",    customName: "" },
+    { word: "enepi",    rarity: "SANDBOX",    customName: "" },
+    { word: "enko",    rarity: "SANDBOX",    customName: "" },
+    { word: "epikule",    rarity: "SANDBOX",    customName: "" },
+    { word: "ete",    rarity: "SANDBOX",    customName: "" },
+    { word: "ewe",    rarity: "SANDBOX",    customName: "" },
+    { word: "i",    rarity: "SANDBOX",    customName: "" },
+    { word: "iki",    rarity: "SANDBOX",    customName: "" },
+    { word: "inisa",    rarity: "SANDBOX",    customName: "" },
+    { word: "inta",    rarity: "SANDBOX",    customName: "" },
+    { word: "ipi",    rarity: "SANDBOX",    customName: "" },
+    { word: "iseki",    rarity: "SANDBOX",    customName: "" },
+    { word: "itomi",    rarity: "SANDBOX",    customName: "" },
+    { word: "jaku",    rarity: "SANDBOX",    customName: "" },
+    { word: "ja",    rarity: "SANDBOX",    customName: "" },
+    { word: "jalan",    rarity: "SANDBOX",    customName: "" },
+    { word: "jans",    rarity: "SANDBOX",    customName: "" },
+    { word: "je",    rarity: "SANDBOX",    customName: "" },
+    { word: "jonke",    rarity: "SANDBOX",    customName: "" },
+    { word: "josuta",    rarity: "SANDBOX",    customName: "" },
+    { word: "ju",    rarity: "SANDBOX",    customName: "" },
+    { word: "jule",    rarity: "SANDBOX",    customName: "" },
+    { word: "jume",    rarity: "SANDBOX",    customName: "" },
+    { word: "juna",    rarity: "SANDBOX",    customName: "" },
+    { word: "jupi",    rarity: "SANDBOX",    customName: "" },
+    { word: "kajo",    rarity: "SANDBOX",    customName: "" },
+    { word: "ka",    rarity: "SANDBOX",    customName: "" },
+    { word: "kalamARR",    rarity: "SANDBOX",    customName: "" },
+    { word: "kalijopilale",    rarity: "SANDBOX",    customName: "" },
+    { word: "kan",    rarity: "SANDBOX",    customName: "" },
+    { word: "kana",    rarity: "SANDBOX",    customName: "" },
+    { word: "kankuli",    rarity: "SANDBOX",    customName: "" },
+    { word: "kasan",    rarity: "SANDBOX",    customName: "" },
+    { word: "ke",    rarity: "SANDBOX",    customName: "" },
+    { word: "kelo",    rarity: "SANDBOX",    customName: "" },
+    { word: "kepa",    rarity: "SANDBOX",    customName: "" },
+    { word: "kepen",    rarity: "SANDBOX",    customName: "" },
+    { word: "kese",    rarity: "SANDBOX",    customName: "" },
+    { word: "kewe",    rarity: "SANDBOX",    customName: "" },
+    { word: "kewi",    rarity: "SANDBOX",    customName: "" },
+    { word: "ki",    rarity: "SANDBOX",    customName: "" },
+    { word: "kikolo",    rarity: "SANDBOX",    customName: "" },
+    { word: "kikulo",    rarity: "SANDBOX",    customName: "" },
+    { word: "kisa",    rarity: "SANDBOX",    customName: "" },
+    { word: "kokoliko",    rarity: "SANDBOX",    customName: "" },
+    { word: "kolin",    rarity: "SANDBOX",    customName: "" },
+    { word: "kolo",    rarity: "SANDBOX",    customName: "" },
+    { word: "konsi",    rarity: "SANDBOX",    customName: "" },
+    { word: "konsuno",    rarity: "SANDBOX",    customName: "" },
+    { word: "kosan",    rarity: "SANDBOX",    customName: "" },
+    { word: "kosikosa",    rarity: "SANDBOX",    customName: "" },
+    { word: "kulaso",    rarity: "SANDBOX",    customName: "" },
+    { word: "kulu",    rarity: "SANDBOX",    customName: "" },
+    { word: "kuntu",    rarity: "SANDBOX",    customName: "" },
+    { word: "kutopoma",    rarity: "SANDBOX",    customName: "" },
+    { word: "lan",    rarity: "SANDBOX",    customName: "" },
+    { word: "lapan",    rarity: "SANDBOX",    customName: "" },
+    { word: "lenke",    rarity: "SANDBOX",    customName: "" },
+    { word: "lijokuku2",    rarity: "SANDBOX",    customName: "lijokuku" },
+    { word: "likujo",    rarity: "SANDBOX",    customName: "" },
+    { word: "lipasa",    rarity: "SANDBOX",    customName: "" },
+    { word: "lisa",    rarity: "SANDBOX",    customName: "" },
+    { word: "lo",    rarity: "SANDBOX",    customName: "" },
+    { word: "loka",    rarity: "SANDBOX",    customName: "" },
+    { word: "lokon",    rarity: "SANDBOX",    customName: "" },
+    { word: "loku",    rarity: "SANDBOX",    customName: "" },
+    { word: "lonsi",    rarity: "SANDBOX",    customName: "" },
+    { word: "lu",    rarity: "SANDBOX",    customName: "" },
+    { word: "lu2",    rarity: "SANDBOX",    customName: "lu" },
+    { word: "masalo",    rarity: "SANDBOX",    customName: "" },
+    { word: "masenta",    rarity: "SANDBOX",    customName: "" },
+    { word: "me",    rarity: "SANDBOX",    customName: "" },
+    { word: "molusa",    rarity: "SANDBOX",    customName: "" },
+    { word: "mulapisu",    rarity: "SANDBOX",    customName: "" },
+    { word: "nalanja",    rarity: "SANDBOX",    customName: "" },
+    { word: "natu",    rarity: "SANDBOX",    customName: "" },
+    { word: "ne",    rarity: "SANDBOX",    customName: "" },
+    { word: "neja",    rarity: "SANDBOX",    customName: "" },
+    { word: "nele",    rarity: "SANDBOX",    customName: "" },
+    { word: "nowi",    rarity: "SANDBOX",    customName: "" },
+    { word: "nu",    rarity: "SANDBOX",    customName: "" },
+    { word: "nu2",    rarity: "SANDBOX",    customName: "nu" },
+    { word: "nun",    rarity: "SANDBOX",    customName: "" },
+    { word: "nusun",    rarity: "SANDBOX",    customName: "" },
+    { word: "nuwa",    rarity: "SANDBOX",    customName: "" },
+    { word: "okepuma",    rarity: "SANDBOX",    customName: "" },
+    { word: "oki",    rarity: "SANDBOX",    customName: "" },
+    { word: "olala",    rarity: "SANDBOX",    customName: "" },
+    { word: "omekalike",    rarity: "SANDBOX",    customName: "" },
+    { word: "omen",    rarity: "SANDBOX",    customName: "" },
+    { word: "oni",    rarity: "SANDBOX",    customName: "" },
+    { word: "onono",    rarity: "SANDBOX",    customName: "" },
+    { word: "opasan",    rarity: "SANDBOX",    customName: "" },
+    { word: "pa",    rarity: "SANDBOX",    customName: "" },
+    { word: "pakola",    rarity: "SANDBOX",    customName: "" },
+    { word: "panke",    rarity: "SANDBOX",    customName: "" },
+    { word: "papa1",    rarity: "SANDBOX",    customName: "papa" },
+    { word: "papa2",    rarity: "SANDBOX",    customName: "papa" },
+    { word: "papa3",    rarity: "SANDBOX",    customName: "papa" },
+    { word: "pasila",    rarity: "SANDBOX",    customName: "" },
+    { word: "pata",    rarity: "SANDBOX",    customName: "" },
+    { word: "patu",    rarity: "SANDBOX",    customName: "" },
+    { word: "pela",    rarity: "SANDBOX",    customName: "" },
+    { word: "peta",    rarity: "SANDBOX",    customName: "" },
+    { word: "peto",    rarity: "SANDBOX",    customName: "" },
+    { word: "Pingo",    rarity: "SANDBOX",    customName: "" },
+    { word: "pipo",    rarity: "SANDBOX",    customName: "" },
+    { word: "pipolo",    rarity: "SANDBOX",    customName: "" },
+    { word: "pokasi",    rarity: "SANDBOX",    customName: "" },
+    { word: "polinpin",    rarity: "SANDBOX",    customName: "" },
+    { word: "pomotolo",    rarity: "SANDBOX",    customName: "" },
+    { word: "poni",    rarity: "SANDBOX",    customName: "" },
+    { word: "positu",    rarity: "SANDBOX",    customName: "" },
+    { word: "potesu",    rarity: "SANDBOX",    customName: "" },
+    { word: "pulaso",    rarity: "SANDBOX",    customName: "" },
+    { word: "saja",    rarity: "SANDBOX",    customName: "" },
+    { word: "samu",    rarity: "SANDBOX",    customName: "" },
+    { word: "sapelipope",    rarity: "SANDBOX",    customName: "" },
+    { word: "se1",    rarity: "SANDBOX",    customName: "se" },
+    { word: "se2",    rarity: "SANDBOX",    customName: "se" },
+    { word: "sikako",    rarity: "SANDBOX",    customName: "" },
+    { word: "sikomo",    rarity: "SANDBOX",    customName: "" },
+    { word: "silapa",    rarity: "SANDBOX",    customName: "" },
+    { word: "sipi",    rarity: "SANDBOX",    customName: "" },
+    { word: "sipije",    rarity: "SANDBOX",    customName: "" },
+    { word: "siwala",    rarity: "SANDBOX",    customName: "" },
+    { word: "slape",    rarity: "SANDBOX",    customName: "" },
+    { word: "snoweli",    rarity: "SANDBOX",    customName: "" },
+    { word: "sole",    rarity: "SANDBOX",    customName: "" },
+    { word: "suke",    rarity: "SANDBOX",    customName: "" },
+    { word: "sulaso",    rarity: "SANDBOX",    customName: "" },
+    { word: "sunta",    rarity: "SANDBOX",    customName: "" },
+    { word: "suwili",    rarity: "SANDBOX",    customName: "" },
+    { word: "ta",    rarity: "SANDBOX",    customName: "" },
+    { word: "take",    rarity: "SANDBOX",    customName: "" },
+    { word: "tankala",    rarity: "SANDBOX",    customName: "" },
+    { word: "tasun",    rarity: "SANDBOX",    customName: "" },
+    { word: "teki",    rarity: "SANDBOX",    customName: "" },
+    { word: "ten",    rarity: "SANDBOX",    customName: "" },
+    { word: "tenkala",    rarity: "SANDBOX",    customName: "" },
+    { word: "tokana",    rarity: "SANDBOX",    customName: "" },
+    { word: "toma",    rarity: "SANDBOX",    customName: "" },
+    { word: "tona",    rarity: "SANDBOX",    customName: "" },
+    { word: "towoki",    rarity: "SANDBOX",    customName: "" },
+    { word: "tuli",    rarity: "SANDBOX",    customName: "" },
+    { word: "u",    rarity: "SANDBOX",    customName: "" },
+    { word: "uka",    rarity: "SANDBOX",    customName: "" },
+    { word: "umesu",    rarity: "SANDBOX",    customName: "" },
+    { word: "waken",    rarity: "SANDBOX",    customName: "" },
+    { word: "waleja",    rarity: "SANDBOX",    customName: "" },
+    { word: "wawajete",    rarity: "SANDBOX",    customName: "" },
+    { word: "we1",    rarity: "SANDBOX",    customName: "we" },
+    { word: "we2",    rarity: "SANDBOX",    customName: "we" },
+    { word: "wi",    rarity: "SANDBOX",    customName: "" },
+    { word: "wisa",    rarity: "SANDBOX",    customName: "" },
+    { word: "wiwi",    rarity: "SANDBOX",    customName: "" },
+    { word: "yutu",    rarity: "SANDBOX",    customName: "" },
+    { word: "kalapisituwi",    rarity: "SANDBOX",    customName: "kalapisituji" },
+    { word: "aAANUSEMEmailMahjong",    rarity: "ARCANE",    customName: "", displayFontSize: "14" },
+    { word: "akesiv",    rarity: "ARCANE",    customName: "" },
+    { word: "ana",    rarity: "ARCANE",    customName: "" },
+    { word: "ani",    rarity: "ARCANE",    customName: "" },
+    { word: "asu",    rarity: "ARCANE",    customName: "" },
+    { word: "elen",    rarity: "ARCANE",    customName: "" },
+    { word: "ene",    rarity: "ARCANE",    customName: "" },
+    { word: "eni",    rarity: "ARCANE",    customName: "" },
+    { word: "jete",    rarity: "ARCANE",    customName: "" },
+    { word: "jew",    rarity: "ARCANE",    customName: "" },
+    { word: "kani",    rarity: "ARCANE",    customName: "" },
+    { word: "ki0",    rarity: "ARCANE",    customName: "ki" },
+    { word: "kijesankalu",    rarity: "ARCANE",    customName: "" },
+    { word: "kijosin",    rarity: "ARCANE",    customName: "" },
+    { word: "kinute",    rarity: "ARCANE",    customName: "" },
+    { word: "kitu",    rarity: "ARCANE",    customName: "" },
+    { word: "koni",    rarity: "ARCANE",    customName: "" },
+    { word: "kuki",    rarity: "ARCANE",    customName: "" },
+    { word: "kulepiku",    rarity: "ARCANE",    customName: "" },
+    { word: "lajuto",    rarity: "ARCANE",    customName: "" },
+    { word: "lansan",    rarity: "ARCANE",    customName: "" },
+    { word: "lato",    rarity: "ARCANE",    customName: "" },
+    { word: "linuwi",    rarity: "ARCANE",    customName: "" },
+    { word: "lisana",    rarity: "ARCANE",    customName: "" },
+    { word: "mamasi",    rarity: "ARCANE",    customName: "" },
+    { word: "mamasina",    rarity: "ARCANE",    customName: "" },
+    { word: "masu",    rarity: "ARCANE",    customName: "" },
+    { word: "matula",    rarity: "ARCANE",    customName: "" },
+    { word: "miko",    rarity: "ARCANE",    customName: "" },
+    { word: "nan",    rarity: "ARCANE",    customName: "" },
+    { word: "paka",    rarity: "ARCANE",    customName: "" },
+    { word: "panpan",    rarity: "ARCANE",    customName: "" },
+    { word: "pe",    rarity: "ARCANE",    customName: "" },
+    { word: "salantapotalusa",    rarity: "ARCANE",    customName: "" },
+    { word: "santa",    rarity: "ARCANE",    customName: "" },
+    { word: "si",    rarity: "ARCANE",    customName: "" },
+    { word: "sisi",    rarity: "ARCANE",    customName: "" },
+    { word: "sokeli",    rarity: "ARCANE",    customName: "" },
+    { word: "soni",    rarity: "ARCANE",    customName: "" },
+    { word: "sowoli",    rarity: "ARCANE",    customName: "" },
+    { word: "tawake",    rarity: "ARCANE",    customName: "" },
+    { word: "teken",    rarity: "ARCANE",    customName: "" },
+    { word: "topo",    rarity: "ARCANE",    customName: "" },
+    { word: "tuwa",    rarity: "ARCANE",    customName: "" },
+    { word: "wi0",    rarity: "ARCANE",    customName: "wi" },
+    { word: "wiju",    rarity: "ARCANE",    customName: "" },
+    { word: "wiki",    rarity: "ARCANE",    customName: "" },
+    { word: "wowujiti",    rarity: "ARCANE",    customName: "" },
+];
+
+const cardData = {};
+cardsConfig.forEach(card => {
+    const rarityInfo = rarities.find(r => r.name === card.rarity) || rarities[1];
+    cardData[card.word] = {
+        ...rarityInfo,
+        word: card.word,
+        customName: card.customName || "",
+        displayFontSize: card.displayFontSize || ""
+    };
+});
+
+const tokiPonaWords = cardsConfig.map(card => card.word);
+
+let collection = [];
+let timeCounter = 0;
+
+
+const main = document.getElementById("main");
+const packScreen = document.getElementById("packScreen");
+const pack = document.getElementById("pack");
+const hint = document.getElementById("hint");
+const topnav = document.getElementById("topnav");
+const navSeparator = document.getElementById("navSeparator");
+const sorterWrapper = document.getElementById("sorterWrapper");
+const sorterBar = document.getElementById("sorterBar");
+
+const cardsArea = document.getElementById("cardsArea");
+const cardsContainer = document.getElementById("cards");
+const addBtn = document.getElementById("addBtn");
+const collectionArea = document.getElementById("collectionArea");
+
+const navPack = document.getElementById("navPack");
+const navCollection = document.getElementById("navCollection");
+const resetBtn = document.getElementById("resetBtn");
+const emptyCollection = document.getElementById("emptyCollection");
+const collectionCount = document.getElementById("collectionCount");
+const packLimitStatus = document.getElementById("packLimitStatus");
+const sorterBottom = document.querySelector(".sorter-bottom");
+
+let currentPulled = [];
+let isAnimating = false;
+
+
+function saveCollection() {
+    localStorage.setItem("ponaCollection", JSON.stringify(collection));
+}
+
+function loadCollection() {
+    const saved = localStorage.getItem("ponaCollection");
+    if (saved) {
+        try {
+            collection = JSON.parse(saved);
+            if (!Array.isArray(collection)) collection = [];
+        } catch {
+            collection = [];
+        }
+        if (collection.length > 0) {
+            timeCounter = Math.max(...collection.map(c => c.timeAdded || 0));
+        }
+    }
+}
+
+const PACK_LIMIT = 5;
+let packUsage = { date: "", opened: 0, resetAt: 0 };
+let packTimer = null;
+
+function getTodayString() {
+    return new Date().toISOString().slice(0, 10);
+}
+
+function loadPackUsage() {
+    const saved = localStorage.getItem("ponaPackUsage");
+    if (saved) {
+        try {
+            const parsed = JSON.parse(saved);
+            if (parsed && typeof parsed === "object") {
+                packUsage = {
+                    date: parsed.date || getTodayString(),
+                    opened: Number(parsed.opened || 0)
+                };
+            }
+        } catch {
+            packUsage = { date: getTodayString(), opened: 0 };
+        }
+    } else {
+        packUsage = { date: getTodayString(), opened: 0 };
+    }
+
+    const today = getTodayString();
+    if (packUsage.date !== today) {
+        packUsage.date = today;
+        packUsage.opened = 0;
+        savePackUsage();
+    }
+}
+
+function savePackUsage() {
+    localStorage.setItem("ponaPackUsage", JSON.stringify(packUsage));
+}
+
+function updatePackStatus() {
+    const today = getTodayString();
+    if (packUsage.date !== today) {
+        packUsage.date = today;
+        packUsage.opened = 0;
+        savePackUsage();
+    }
+
+    const remaining = Math.max(0, PACK_LIMIT - packUsage.opened);
+    packLimitStatus.textContent = `${remaining}/${PACK_LIMIT} packs left`;
+
+    if (remaining <= 0) {
+        hint.textContent = "Daily limit reached, check back tomorrow!";
+    } else {
+        hint.textContent = "Click to open a card pack!";
+    }
+}
+
+function startPackTimer() {
+}
+
+function setCollectionCountText() {
+    const total = tokiPonaWords.length;
+    const owned = collection.length;
+    collectionCount.textContent = `${owned} / ${total}`;
+}
+
+function positionEmptyCollectionText() {
+    const navBottom = document.querySelector(".topnav-wrapper").getBoundingClientRect().bottom;
+    const screenBottom = window.innerHeight;
+    const centerY = navBottom + (screenBottom - navBottom) / 2;
+    emptyCollection.style.top = `${centerY}px`;
+}
+
+
+function getAvailableWords() {
+    return tokiPonaWords.filter(w => !collection.some(c => c.word === w));
+}
+
+function getRarityWeight(rarityName) {
+    switch (rarityName) {
+        case "ARCANE": return 1;
+        case "SANDBOX": return 2;
+        case "OBSCURE": return 3;
+        case "UNCOMMON": return 5;
+        case "COMMON": return 7;
+        case "CORE": return 8;
+        default: return 5;
+    }
+}
+
+function pullUniqueWords(count) {
+    const available = getAvailableWords();
+    const pulled = [];
+
+    while (pulled.length < count && available.length > 0) {
+        const weighted = available.map(word => {
+            const rarity = cardData[word]?.name || "COMMON";
+            return { word, weight: getRarityWeight(rarity) };
+        }).filter(item => item.weight > 0);
+
+        const totalWeight = weighted.reduce((sum, item) => sum + item.weight, 0);
+        if (totalWeight <= 0) break;
+
+        let r = Math.random() * totalWeight;
+        let selectedIndex = 0;
+        for (let i = 0; i < weighted.length; i++) {
+            r -= weighted[i].weight;
+            if (r <= 0) {
+                selectedIndex = i;
+                break;
+            }
+        }
+
+        const selectedWord = weighted[selectedIndex].word;
+        pulled.push(selectedWord);
+        const removeIndex = available.indexOf(selectedWord);
+        if (removeIndex >= 0) available.splice(removeIndex, 1);
+    }
+
+    return pulled;
+}
+
+function renderCard(word) {
+    const rarity = cardData[word];
+
+    const card = document.createElement("div");
+    card.className = "card " + rarity.borderClass;
+
+    const rarityLabel = document.createElement("div");
+    rarityLabel.className = "rarity-label " + rarity.labelClass;
+    rarityLabel.textContent = rarity.name;
+
+    const glyph = document.createElement("div");
+    glyph.className = "glyph";
+    glyph.textContent = word;
+
+    const latin = document.createElement("div");
+    latin.className = "latin";
+    latin.textContent = rarity.customName || word;
+    if (rarity.displayFontSize) {
+        let fontSizeValue = String(rarity.displayFontSize).trim();
+        if (/^[0-9]+$/.test(fontSizeValue)) {
+            fontSizeValue += "px";
+        }
+        latin.style.fontSize = fontSizeValue;
+    }
+
+    card.appendChild(rarityLabel);
+    card.appendChild(glyph);
+    card.appendChild(latin);
+
+    return card;
+}
+
+
+function positionHint() {
+    if (hint.style.display === "none") return;
+
+    const divider = document.getElementById("navSeparator");
+    const dividerRect = divider.getBoundingClientRect();
+    const packRect = pack.getBoundingClientRect();
+
+    const dividerBottom = dividerRect.bottom;
+    const packTop = packRect.top;
+
+    hint.style.display = "block";
+    const hintRect = hint.getBoundingClientRect();
+    const hintHeight = hintRect.height;
+
+    const center = dividerBottom + (packTop - dividerBottom) / 2;
+    const top = center - hintHeight / 2;
+
+    hint.style.top = `${top}px`;
+}
+
+
+function showPackScreen() {
+    main.classList.remove("fullscreen");
+
+    packScreen.style.display = "flex";
+    cardsArea.style.display = "none";
+    collectionArea.style.display = "none";
+
+    topnav.style.display = "flex";
+    resetBtn.style.display = "block";
+    navSeparator.classList.remove("hidden");
+    sorterWrapper.style.display = "none";
+
+    navPack.classList.remove("hidden");
+    navCollection.classList.remove("hidden");
+
+    emptyCollection.style.display = "none";
+    packLimitStatus.style.display = "block";
+    sorterBottom.classList.add("hidden");
+    updatePackStatus();
+    hint.style.display = "block";
+    requestAnimationFrame(positionHint);
+}
+
+function openPack() {
+    if (isAnimating) return;
+
+    updatePackStatus();
+    const remaining = Math.max(0, PACK_LIMIT - packUsage.opened);
+    if (remaining <= 0) {
+        hint.textContent = "Daily limit reached, check back tomorrow!";
+        hint.style.display = "block";
+        return;
+    }
+
+    const available = getAvailableWords();
+    if (available.length === 0) return;
+
+    packUsage.opened += 1;
+    packUsage.date = getTodayString();
+    savePackUsage();
+    updatePackStatus();
+
+    main.classList.add("fullscreen");
+
+    packScreen.style.display = "none";
+    hint.style.display = "none";
+    emptyCollection.style.display = "none";
+
+    topnav.style.display = "none";
+    resetBtn.style.display = "none";
+    packLimitStatus.style.display = "none";
+    navSeparator.classList.add("hidden");
+    sorterWrapper.style.display = "none";
+    sorterBottom.classList.add("hidden");
+
+    cardsArea.style.display = "flex";
+
+    addBtn.classList.remove("fade-out", "visible");
+
+    currentPulled = pullUniqueWords(3);
+    cardsContainer.innerHTML = "";
+
+    let pulledCount = currentPulled.length;
+    let cardsShown = 0;
+
+    currentPulled.forEach((word, i) => {
+        const card = renderCard(word);
+        cardsContainer.appendChild(card);
+
+        setTimeout(() => {
+            card.classList.add("show");
+
+            cardsShown++;
+            if (cardsShown === pulledCount) {
+                setTimeout(() => {
+                    addBtn.classList.add("visible");
+                }, 200);
+            }
+        }, 250 + i * 250);
+    });
+}
+
+function renderCollection() {
+    collectionArea.innerHTML = "";
+    collection.forEach(entry => {
+        const card = renderCard(entry.word);
+        card.classList.add("show");
+        collectionArea.appendChild(card);
+    });
+}
+
+function showCollectionScreen() {
+    if (isAnimating) return;
+
+    main.classList.remove("fullscreen");
+
+    packScreen.style.display = "none";
+    cardsArea.style.display = "none";
+    hint.style.display = "none";
+
+    topnav.style.display = "flex";
+    resetBtn.style.display = "block";
+    packLimitStatus.style.display = "none";
+    navSeparator.classList.remove("hidden");
+    sorterWrapper.style.display = "flex";
+
+    navPack.classList.remove("hidden");
+    navCollection.classList.remove("hidden");
+
+    setCollectionCountText();
+
+    if (collection.length === 0) {
+        emptyCollection.style.display = "block";
+        positionEmptyCollectionText();
+        collectionArea.style.display = "none";
+    } else {
+        emptyCollection.style.display = "none";
+        collectionArea.style.display = "grid";
+        renderCollection();
+    }
+
+    sorterBottom.classList.remove("hidden");
+}
+
+
+function applySort(type) {
+    if (type === "time") {
+        collection.sort((a, b) => (b.timeAdded || 0) - (a.timeAdded || 0));
+    } else if (type === "alpha") {
+        collection.sort((a, b) => a.word.localeCompare(b.word));
+    } else if (type === "rarity") {
+        collection.sort((a, b) => {
+            const rA = cardData[a.word].rank;
+            const rB = cardData[b.word].rank;
+            if (rA !== rB) return rB - rA;
+            return a.word.localeCompare(b.word);
+        });
+    }
+
+    renderCollection();
+}
+
+sorterBar.addEventListener("click", e => {
+    if (!e.target.classList.contains("sorter-btn")) return;
+
+    document.querySelectorAll(".sorter-btn").forEach(btn =>
+        btn.classList.remove("active")
+    );
+
+    e.target.classList.add("active");
+    applySort(e.target.dataset.sort);
+});
+
+
+function animateCardsToCollection() {
+    const cards = Array.from(cardsContainer.querySelectorAll(".card")).slice(0, currentPulled.length);
+
+    topnav.style.display = "flex";
+    navSeparator.classList.add("hidden");
+    sorterWrapper.style.display = "none";
+
+    navPack.classList.add("hidden");
+    navCollection.classList.remove("hidden");
+
+    const targetRect = navCollection.getBoundingClientRect();
+    const targetX = targetRect.left + targetRect.width / 2;
+    const targetY = targetRect.top + targetRect.height / 2;
+
+    let finished = 0;
+    const clones = [];
+
+    cards.forEach((card, i) => {
+        const rect = card.getBoundingClientRect();
+        const startX = rect.left + rect.width / 2;
+        const startY = rect.top + rect.height / 2;
+
+        const dx = targetX - startX;
+        const dy = targetY - startY;
+
+        const clone = card.cloneNode(true);
+        clone.style.position = "fixed";
+        clone.style.left = `${rect.left}px`;
+        clone.style.top = `${rect.top}px`;
+        clone.style.width = `${rect.width}px`;
+        clone.style.height = `${rect.height}px`;
+        clone.style.margin = "0";
+        clone.style.transform = "none";
+        clone.style.opacity = "1";
+        clone.style.transition = "transform 0.55s cubic-bezier(0.25, 0.1, 0.25, 1), opacity 0.55s ease-out";
+        clone.style.zIndex = "999";
+        clone.classList.add("fly");
+
+        document.body.appendChild(clone);
+        card.style.visibility = "hidden";
+
+        setTimeout(() => {
+            clone.style.transform = `translate(${dx}px, ${dy}px) scale(0.35)`;
+            clone.style.opacity = "0";
+        }, 50 + i * 150);
+
+        clone.addEventListener("transitionend", (event) => {
+            if (event.propertyName !== "opacity") return;
+
+            clone.remove();
+            finished++;
+
+            if (finished === cards.length) {
+                cards.forEach(c => c.remove());
+                cardsContainer.innerHTML = "";
+                navCollection.classList.add("hidden");
+                topnav.style.display = "none";
+                isAnimating = false;
+                showPackScreen();
+            }
+        }, { once: true });
+
+        clones.push(clone);
+    });
+
+    const maxDuration = 800 + cards.length * 150;
+    setTimeout(() => {
+        if (finished < cards.length) {
+            clones.forEach(clone => clone.remove());
+            cards.forEach(c => c.remove());
+            cardsContainer.innerHTML = "";
+            navCollection.classList.add("hidden");
+            topnav.style.display = "none";
+            isAnimating = false;
+            showPackScreen();
+        }
+    }, maxDuration + 300);
+}
+
+addBtn.addEventListener("click", () => {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    currentPulled.forEach(word => {
+        timeCounter += 1;
+        collection.push({ word, timeAdded: timeCounter });
+    });
+
+    saveCollection();
+
+    addBtn.classList.remove("visible");
+    addBtn.classList.add("fade-out");
+
+    animateCardsToCollection();
+});
+
+resetBtn.addEventListener("click", () => {
+    if (isAnimating) return;
+    collection = [];
+    timeCounter = 0;
+    saveCollection();
+    collectionArea.innerHTML = "";
+    cardsContainer.innerHTML = "";
+    showPackScreen();
+});
+
+pack.addEventListener("click", openPack);
+navPack.addEventListener("click", showPackScreen);
+navCollection.addEventListener("click", showCollectionScreen);
+
+window.addEventListener("resize", () => {
+    requestAnimationFrame(() => {
+        if (packScreen.style.display !== "none") {
+            positionHint();
+        }
+        if (emptyCollection.style.display === "block") {
+            positionEmptyCollectionText();
+        }
+    });
+});
+
+loadCollection();
+loadPackUsage();
+updatePackStatus();
+showPackScreen();
+applySort("time");
+setCollectionCountText();
+</script>
+
+</body>
+</html>
