@@ -15,6 +15,8 @@ Upon starting the game, you'll be met with a pack of cards and two navigation bu
 Click on the pack to open it and unlock 3 cards. You can open 5 packs per day.
 The navigation buttons allow you to move between sections on the website. The "Collection" button will take you to a list of all cards you own, while the "Pack" button will bring you back to the menu where you can open a pack.
 
+<img width="428" height="306" alt="image" src="https://github.com/user-attachments/assets/2cde57bd-a0d4-486c-b06c-a7a5dc6fd4df" />
+
 Credits
 -----------------------------------------------------------------------------------------------
 Font used: https://www.kreativekorp.com/software/fonts/fairfaxponahd/
